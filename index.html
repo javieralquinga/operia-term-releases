@@ -370,7 +370,7 @@
     var MATCH = {
       "mac-arm": function (n) { return /arm64\.dmg$/i.test(n); },
       "mac-intel": function (n) { return /\.dmg$/i.test(n) && !/arm64/i.test(n); },
-      "win": function (n) { return /\.exe$/i.test(n); },
+      "win": function (n) { return /setup.*\.exe$/i.test(n); },
       "linux-appimage": function (n) { return /\.AppImage$/i.test(n); },
       "linux-deb": function (n) { return /\.deb$/i.test(n); }
     };
