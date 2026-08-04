@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Operia Term — Tus agentes de IA, en paralelo</title>
+<meta name="description" content="Una terminal de escritorio que corre varios agentes de código (Claude, Codex, opencode) en paralelo — con un companion móvil para supervisarlos desde el celular. Descargá para macOS, Windows y Linux." />
+<meta property="og:title" content="Operia Term" />
+<meta property="og:description" content="Tus agentes de IA, en paralelo. Descargá para macOS, Windows y Linux." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #020617;
+    --surface: #0b1220;
+    --surface-hi: #111a2e;
+    --primary: #0f172a;
+    --fg: #f8fafc;
+    --muted: #94a3b8;
+    --muted-2: #64748b;
+    --border: #1e293b;
+    --accent: #22c55e;
+    --accent-hi: #4ade80;
+    --accent-wash: rgba(34, 197, 94, 0.12);
+    --radius: 14px;
+    --maxw: 1120px;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  /* ambient glow */
+  .glow {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(600px 340px at 78% -6%, rgba(34,197,94,0.16), transparent 60%),
+      radial-gradient(680px 380px at 8% 4%, rgba(56,89,255,0.10), transparent 60%);
+  }
+  header, main, footer { position: relative; z-index: 1; }
+
+  /* nav */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 0;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: -0.2px; }
+  .brand .logo {
+    width: 30px; height: 30px; border-radius: 8px;
+    background: linear-gradient(135deg, #14351f, #0b1220);
+    border: 1px solid var(--border);
+    display: grid; place-items: center; color: var(--accent);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+  }
+  .nav-links { display: flex; gap: 26px; align-items: center; color: var(--muted); font-size: 15px; }
+  .nav-links a { transition: color .18s ease; }
+  .nav-links a:hover { color: var(--fg); }
+  .nav-cta {
+    padding: 9px 16px; border-radius: 10px; background: var(--accent); color: #04140a;
+    font-weight: 600; font-size: 14px; cursor: pointer; transition: transform .18s ease, background .18s ease;
+  }
+  .nav-cta:hover { background: var(--accent-hi); transform: translateY(-1px); }
+
+  /* hero */
+  .hero { padding: 64px 0 40px; display: grid; grid-template-columns: 1.05fr 1fr; gap: 56px; align-items: center; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--accent-hi); font-weight: 500;
+    padding: 6px 12px; border: 1px solid var(--border); border-radius: 999px;
+    background: var(--accent-wash);
+  }
+  .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+  h1 {
+    font-size: clamp(34px, 5.2vw, 56px); line-height: 1.05; letter-spacing: -1.4px;
+    margin: 20px 0 16px; font-weight: 700;
+  }
+  h1 .hl { color: var(--accent); text-shadow: 0 0 26px rgba(34,197,94,0.35); }
+  .sub { font-size: clamp(16px, 2.2vw, 19px); color: var(--muted); max-width: 44ch; margin: 0 0 28px; }
+
+  .cta-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 11px;
+    padding: 14px 22px; border-radius: 12px; font-weight: 600; font-size: 15px;
+    cursor: pointer; border: 1px solid transparent; transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    min-height: 48px;
+  }
+  .btn svg { width: 20px; height: 20px; flex: none; }
+  .btn-primary { background: var(--accent); color: #04140a; box-shadow: 0 10px 30px -12px rgba(34,197,94,0.6); }
+  .btn-primary:hover { background: var(--accent-hi); transform: translateY(-2px); }
+  .btn-primary .sup { font-size: 12px; font-weight: 500; opacity: .7; }
+  .btn-ghost { background: var(--surface); border-color: var(--border); color: var(--fg); }
+  .btn-ghost:hover { background: var(--surface-hi); border-color: #2b3a55; transform: translateY(-2px); }
+  .os-note { font-size: 13px; color: var(--muted-2); margin-top: 14px; }
+  .os-note a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+  .os-note a:hover { color: var(--fg); }
+
+  /* terminal mock */
+  .mock {
+    background: linear-gradient(180deg, #0c1526, #070d19);
+    border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+    box-shadow: 0 40px 90px -40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.03);
+  }
+  .mock-bar { display: flex; align-items: center; gap: 8px; padding: 13px 16px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.015); }
+  .mock-bar .dots { display: flex; gap: 7px; }
+  .mock-bar .dots i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .mock-bar .dots i:nth-child(1){ background:#ff5f57; } .mock-bar .dots i:nth-child(2){ background:#febc2e; } .mock-bar .dots i:nth-child(3){ background:#28c840; }
+  .mock-bar .tabs { display: flex; gap: 6px; margin-left: 10px; font-size: 12px; color: var(--muted-2); }
+  .mock-bar .tabs span { padding: 3px 10px; border-radius: 7px; }
+  .mock-bar .tabs span.on { background: var(--accent-wash); color: var(--accent-hi); }
+  .mock-body { padding: 18px 18px 22px; font-family: var(--mono); font-size: 13.5px; line-height: 1.75; }
+  .mock-body .l { display: block; white-space: pre-wrap; }
+  .c-prompt { color: var(--accent); } .c-dim { color: var(--muted-2); } .c-key { color: #7dd3fc; } .c-warn { color: #fbbf24; } .c-ok { color: var(--accent-hi); }
+  .caret { display:inline-block; width:8px; height:16px; background:var(--accent); vertical-align:-3px; animation: blink 1.1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* trust strip */
+  .strip { display: flex; flex-wrap: wrap; gap: 26px 40px; justify-content: center; padding: 30px 0; color: var(--muted-2); font-size: 14px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-top: 24px; }
+  .strip span { display: inline-flex; align-items: center; gap: 8px; }
+  .strip svg { width: 16px; height: 16px; color: var(--accent); }
+
+  /* features */
+  section.block { padding: 84px 0; }
+  .section-head { text-align: center; max-width: 640px; margin: 0 auto 52px; }
+  .section-head h2 { font-size: clamp(26px, 3.6vw, 36px); letter-spacing: -0.8px; margin: 0 0 12px; }
+  .section-head p { color: var(--muted); margin: 0; font-size: 17px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 26px; transition: transform .2s ease, border-color .2s ease;
+  }
+  .card:hover { transform: translateY(-3px); border-color: #2b3a55; }
+  .card .ico { width: 42px; height: 42px; border-radius: 11px; background: var(--accent-wash); display: grid; place-items: center; color: var(--accent); margin-bottom: 16px; }
+  .card .ico svg { width: 22px; height: 22px; }
+  .card h3 { margin: 0 0 8px; font-size: 17px; letter-spacing: -0.2px; }
+  .card p { margin: 0; color: var(--muted); font-size: 14.5px; }
+
+  /* download */
+  #download { scroll-margin-top: 20px; }
+  .dl-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .dl {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 26px; display: flex; flex-direction: column; gap: 14px;
+  }
+  .dl.match { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-wash), 0 24px 50px -30px rgba(34,197,94,0.5); }
+  .dl .os { display: flex; align-items: center; gap: 12px; }
+  .dl .os svg { width: 30px; height: 30px; color: var(--fg); }
+  .dl .os h3 { margin: 0; font-size: 18px; }
+  .dl .os .badge { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--accent-hi); background: var(--accent-wash); padding: 4px 9px; border-radius: 999px; letter-spacing: .3px; }
+  .dl p.detail { margin: 0; color: var(--muted-2); font-size: 13px; min-height: 20px; }
+  .dl .dl-btns { display: flex; flex-direction: column; gap: 9px; margin-top: auto; }
+  .dl-link {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 12px 15px; border-radius: 10px; background: var(--surface-hi); border: 1px solid var(--border);
+    font-size: 14px; font-weight: 500; cursor: pointer; transition: background .16s ease, border-color .16s ease, transform .16s ease;
+  }
+  .dl-link:hover { background: #16233b; border-color: #2b3a55; transform: translateY(-1px); }
+  .dl-link.primary { background: var(--accent); color: #04140a; border-color: transparent; }
+  .dl-link.primary:hover { background: var(--accent-hi); }
+  .dl-link .sz { font-size: 12px; color: var(--muted-2); font-family: var(--mono); }
+  .dl-link.primary .sz { color: rgba(4,20,10,0.6); }
+  .dl-link .arw { width: 16px; height: 16px; }
+
+  .fineprint { text-align: center; color: var(--muted-2); font-size: 13px; margin-top: 28px; }
+  .fineprint code { font-family: var(--mono); background: var(--surface); padding: 2px 7px; border-radius: 6px; border: 1px solid var(--border); color: var(--muted); }
+
+  footer { border-top: 1px solid var(--border); padding: 34px 0; color: var(--muted-2); font-size: 14px; }
+  .foot { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+  .foot a:hover { color: var(--fg); }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; gap: 36px; padding-top: 40px; }
+    .grid, .dl-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+  :focus-visible { outline: 2px solid var(--accent-hi); outline-offset: 3px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<div class="glow" aria-hidden="true"></div>
+
+<header class="wrap">
+  <nav>
+    <div class="brand">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="17" height="17"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+      </span>
+      Operia&nbsp;Term
+    </div>
+    <div class="nav-links">
+      <a href="#features">Características</a>
+      <a href="#download">Descargas</a>
+      <a href="#download" class="nav-cta">Descargar</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="wrap hero">
+    <div>
+      <span class="eyebrow"><span class="dot"></span> v0.2.0 · macOS · Windows · Linux</span>
+      <h1>Tus agentes de IA,<br /><span class="hl">trabajando en paralelo.</span></h1>
+      <p class="sub">Una terminal de escritorio para correr varios agentes de código —Claude, Codex, opencode— cada uno en su panel. Y un companion móvil para supervisarlos desde el celular.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" id="primaryDownload" href="#download">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Descargar<span class="sup" id="primaryOsLabel"> para tu sistema</span></span>
+        </a>
+        <a class="btn btn-ghost" href="#download">Ver todas las plataformas</a>
+      </div>
+      <p class="os-note" id="osNote">Detectando tu sistema operativo…</p>
+    </div>
+
+    <!-- terminal mock -->
+    <div class="mock" role="img" aria-label="Captura estilizada de Operia Term corriendo agentes en paralelo">
+      <div class="mock-bar">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="tabs"><span class="on">claude · api</span><span>codex · web</span><span>opencode</span></div>
+      </div>
+      <div class="mock-body">
+        <span class="l"><span class="c-prompt">operia ~/api</span> <span class="c-dim">›</span> claude "refactor auth flow"</span>
+        <span class="l c-dim">  running · pane 1 ────────────────────────────</span>
+        <span class="l"><span class="c-ok">✓</span> extracted <span class="c-key">TokenService</span>, 3 files touched</span>
+        <span class="l c-warn">  ⧗ waiting for your review…</span>
+        <span class="l">&nbsp;</span>
+        <span class="l"><span class="c-prompt">operia ~/web</span> <span class="c-dim">›</span> codex "add dark mode"</span>
+        <span class="l c-dim">  running · pane 2 ────────────────────────────</span>
+        <span class="l"><span class="c-key">edit</span> src/theme.ts  <span class="c-ok">+42</span> <span style="color:#f87171">-8</span></span>
+        <span class="l">&nbsp;</span>
+        <span class="l c-dim">  📱 companion · 2 agentes · 1 esperando input</span>
+        <span class="l"><span class="c-prompt">operia</span> <span class="c-dim">›</span> <span class="caret" aria-hidden="true"></span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <div class="wrap">
+    <div class="strip">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Cifrado de punta a punta</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Escritorio + companion móvil</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg> macOS · Windows · Linux</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> Claude · Codex · opencode</span>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="block wrap" id="features">
+    <div class="section-head">
+      <h2>Una torre de control para tus agentes</h2>
+      <p>Dejá que los agentes trabajen aunque no estés frente a la compu. Enterate y desbloqueá desde el bolsillo.</p>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+        <h3>Agentes en paralelo</h3>
+        <p>Corré Claude, Codex y opencode al mismo tiempo, cada uno en su panel, workspace y rama.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg></div>
+        <h3>Companion móvil</h3>
+        <p>Vinculás con un QR y desde el teléfono ves la flota en vivo, respondés y desbloqueás agentes.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg></div>
+        <h3>Git de un vistazo</h3>
+        <p>Historial de commits, diffs y Pull Requests por workspace, listos para revisar desde donde estés.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></div>
+        <h3>Voz y respuestas rápidas</h3>
+        <p>Dictá en tu idioma o tocá una respuesta predefinida para guiar al agente sin escribir.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+        <h3>Notas y snippets</h3>
+        <p>Tus notas, snippets y prompts por workspace, siempre a mano —en el escritorio y en el teléfono.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h3>Privado por diseño</h3>
+        <p>Todo cifrado de extremo a extremo. El teléfono nunca ve lo que decidís mantener oculto.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD -->
+  <section class="block wrap" id="download">
+    <div class="section-head">
+      <h2>Descargá Operia Term</h2>
+      <p>Versión 0.2.0 · gratis · elegí tu plataforma.</p>
+    </div>
+    <div class="dl-grid">
+      <!-- macOS -->
+      <div class="dl" data-os="mac">
+        <div class="os">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.365 1.43c0 1.14-.417 2.2-1.11 2.98-.84.94-2.2 1.66-3.32 1.57-.14-1.11.42-2.28 1.06-3 .73-.82 2.02-1.44 3.11-1.55.03.14.04.28.04.42.02-.14.22-.42.22-.42ZM20.7 17.2c-.53 1.22-.78 1.77-1.46 2.85-.95 1.5-2.29 3.37-3.95 3.38-1.47.02-1.85-.96-3.85-.95-2 .01-2.42.97-3.9.95-1.66-.02-2.93-1.7-3.88-3.2-2.66-4.2-2.94-9.13-1.3-11.75 1.17-1.87 3.01-2.96 4.74-2.96 1.77 0 2.88.97 4.35.97 1.42 0 2.29-.97 4.34-.97 1.54 0 3.17.84 4.33 2.28-3.8 2.08-3.19 7.5.44 9.42Z"/></svg>
+          <h3>macOS</h3>
+          <span class="badge" data-badge="mac" hidden>Tu sistema</span>
+        </div>
+        <p class="detail">Apple Silicon (M1–M4) e Intel.</p>
+        <div class="dl-btns">
+          <a class="dl-link primary" data-primary="mac" href="https://github.com/javieralquinga/operia-term-releases/releases/download/v0.2.0/Operia-Term-0.2.0-arm64.dmg">
+            <span>Apple Silicon (.dmg)</span><span class="sz">92 MB</span>
+          </a>
+          <a class="dl-link" href="https://github.com/javieralquinga/operia-term-releases/releases/download/v0.2.0/Operia-Term-0.2.0.dmg">
+            <span>Intel (.dmg)</span><span class="sz">95 MB</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Windows -->
+      <div class="dl" data-os="windows">
+        <div class="os">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.1 10.4 4v7.3H3V5.1Zm0 13.8 7.4 1v-7.2H3v6.2Zm8.3 1.13L21 21.5V12.9h-9.7v7.13Zm0-16.06v7.33H21V2.5l-9.7 1.47Z"/></svg>
+          <h3>Windows</h3>
+          <span class="badge" data-badge="windows" hidden>Tu sistema</span>
+        </div>
+        <p class="detail">Windows 10 y 11 (64-bit).</p>
+        <div class="dl-btns">
+          <a class="dl-link primary" data-primary="windows" href="https://github.com/javieralquinga/operia-term-releases/releases/download/v0.2.0/Operia-Term-Setup-0.2.0.exe">
+            <span>Instalador (.exe)</span><span class="sz">95 MB</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Linux -->
+      <div class="dl" data-os="linux">
+        <div class="os">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-1.7 0-3 1.5-3 3.3 0 1 .1 1.9-.4 2.8-.4.7-1 1.2-1.5 1.9-.9 1.2-1.6 2.6-1.6 4.1 0 .7.2 1.3-.2 1.9-.3.5-.9.8-1 1.4-.1.5.3.9.8 1 .8.2 1.6.2 2.2.8.5.5.9 1.2 1.6 1.5 1.4.6 3 .6 4.4.1.8-.3 1.3-1 2-1.4.6-.4 1.4-.4 2.1-.6.5-.2.9-.6.8-1.1-.1-.6-.7-.9-1-1.4-.4-.6-.2-1.3-.3-2 0-1.5-.7-2.9-1.6-4.1-.5-.7-1.1-1.2-1.5-1.9-.5-.9-.4-1.8-.4-2.8C15 3.5 13.7 2 12 2Zm-1.4 5.3c.4 0 .7.4.7.9s-.3.9-.7.9-.7-.4-.7-.9.3-.9.7-.9Zm2.8 0c.4 0 .7.4.7.9s-.3.9-.7.9-.7-.4-.7-.9.3-.9.7-.9Z"/></svg>
+          <h3>Linux</h3>
+          <span class="badge" data-badge="linux" hidden>Tu sistema</span>
+        </div>
+        <p class="detail">AppImage (cualquier distro) o .deb.</p>
+        <div class="dl-btns">
+          <a class="dl-link primary" data-primary="linux" href="https://github.com/javieralquinga/operia-term-releases/releases/download/v0.2.0/Operia-Term-0.2.0.AppImage">
+            <span>AppImage</span><span class="sz">94 MB</span>
+          </a>
+          <a class="dl-link" href="https://github.com/javieralquinga/operia-term-releases/releases/download/v0.2.0/desktop_0.2.0_amd64.deb">
+            <span>Debian / Ubuntu (.deb)</span><span class="sz">84 MB</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <p class="fineprint">
+      En macOS, la primera vez: click derecho → <strong>Abrir</strong> (build sin firmar todavía). ·
+      En Linux: <code>chmod +x Operia-Term-0.2.0.AppImage &amp;&amp; ./Operia-Term-0.2.0.AppImage</code>
+    </p>
+  </section>
+</main>
+
+<footer class="wrap">
+  <div class="foot">
+    <div class="brand" style="font-weight:500;">
+      <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span>
+      Operia Term
+    </div>
+    <div>© 2026 Operia Term · versión 0.2.0 (early access)</div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    // OS detection — pick the most likely platform, highlight its card + hero CTA.
+    var ua = (navigator.userAgent || "") + " " + (navigator.platform || "");
+    var os = "mac";
+    if (/Win/i.test(ua)) os = "windows";
+    else if (/Linux|X11/i.test(ua) && !/Android/i.test(ua)) os = "linux";
+    else if (/Mac/i.test(ua) || /iPhone|iPad/i.test(ua)) os = "mac";
+
+    var labels = {
+      mac: { name: "macOS", note: 'Detectamos <strong>macOS</strong>. Si tenés un Mac Intel, usá el segundo botón.' },
+      windows: { name: "Windows", note: 'Detectamos <strong>Windows</strong>. El instalador es de 64-bit.' },
+      linux: { name: "Linux", note: 'Detectamos <strong>Linux</strong>. AppImage corre en cualquier distro; también hay .deb.' }
+    };
+
+    // hero CTA -> jump to the matching primary download, with a label
+    var primaryLinks = {};
+    document.querySelectorAll("[data-primary]").forEach(function (a) { primaryLinks[a.getAttribute("data-primary")] = a.getAttribute("href"); });
+    var heroBtn = document.getElementById("primaryDownload");
+    var heroLabel = document.getElementById("primaryOsLabel");
+    if (primaryLinks[os]) {
+      heroBtn.setAttribute("href", primaryLinks[os]);
+      heroLabel.textContent = " para " + labels[os].name;
+    }
+    var note = document.getElementById("osNote");
+    if (note && labels[os]) note.innerHTML = labels[os].note;
+
+    // highlight matching card + badge
+    var card = document.querySelector('.dl[data-os="' + os + '"]');
+    if (card) card.classList.add("match");
+    var badge = document.querySelector('[data-badge="' + os + '"]');
+    if (badge) badge.hidden = false;
+  })();
+</script>
+</body>
+</html>
