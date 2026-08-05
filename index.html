@@ -139,6 +139,7 @@
   .card .ico svg { width: 26px; height: 26px; }
   .card h3 { font-family: var(--font-display); font-weight: 500; font-size: 18px; margin: 0 0 8px; color: var(--bone); }
   .card p { color: var(--fog); font-size: 15px; margin: 0; }
+  .soon { display: inline-block; margin-left: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--key-lime); border: 1px solid var(--steel); border-radius: 9999px; padding: 1px 8px; vertical-align: middle; letter-spacing: .3px; }
 
   /* ── Download ──────────────────────────── */
   #download { scroll-margin-top: 72px; }
@@ -201,7 +202,7 @@
   <section class="wrap hero">
     <span class="eyebrow"><span class="led" aria-hidden="true"></span> <span id="verTag">v0.2.0</span> · macOS · Windows · Linux</span>
     <h1>Tus agentes de código, en paralelo.</h1>
-    <p class="sub">Una terminal de escritorio para correr Claude, Codex y opencode a la vez —cada uno en su panel— con un companion móvil para supervisarlos desde el celular.</p>
+    <p class="sub">Una terminal de escritorio para ejecutar Claude, Codex y opencode a la vez, cada uno en su panel. Y muy pronto, un companion móvil para supervisarlos desde el celular.</p>
     <div class="cta-row">
       <a class="btn btn-primary" id="primaryDownload" href="#download">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -226,7 +227,7 @@
       <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Claude</span>
       <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> Codex</span>
       <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7v10l10 5 10-5V7z"/><path d="M2 7l10 5 10-5M12 22V12"/></svg> opencode</span>
-      <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="var(--event-violet)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg> Companion móvil</span>
+      <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="var(--event-violet)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg> Companion móvil · pronto</span>
     </div>
   </section>
 
@@ -236,7 +237,7 @@
   <section class="block wrap" id="features">
     <div class="head">
       <h2>Una torre de control para tus agentes</h2>
-      <p>Dejá que trabajen aunque no estés frente a la compu. Enterate y desbloqueá desde el bolsillo.</p>
+      <p>Orquesta tus agentes en paralelo desde la terminal. Y muy pronto, supervísalos también desde el celular.</p>
     </div>
     <div class="grid">
       <article class="card">
@@ -246,28 +247,28 @@
       </article>
       <article class="card">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg></span>
-        <h3>Companion móvil</h3>
-        <p>Vinculás con un QR y ves la flota en vivo, respondés y desbloqueás agentes desde el teléfono.</p>
+        <h3>Companion móvil <span class="soon">Pronto</span></h3>
+        <p>Vincula con un QR para ver la flota en vivo, responder y desbloquear agentes desde el celular. Próximamente.</p>
       </article>
       <article class="card">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="var(--loop-green)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg></span>
-        <h3>Git de un vistazo</h3>
-        <p>Historial de commits, diffs y Pull Requests por workspace, listos para revisar desde donde estés.</p>
+        <h3>Git integrado</h3>
+        <p>Historial de commits, diffs y Pull Requests por workspace, integrados en la terminal.</p>
       </article>
       <article class="card">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="var(--key-lime)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></span>
-        <h3>Voz y respuestas rápidas</h3>
-        <p>Dictá en tu idioma o tocá una respuesta predefinida para guiar al agente sin escribir.</p>
+        <h3>Voz y respuestas rápidas <span class="soon">Pronto</span></h3>
+        <p>Dicta en tu idioma o usa respuestas rápidas para guiar al agente sin escribir. Llega con el companion.</p>
       </article>
       <article class="card">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="var(--magenta)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></span>
         <h3>Notas y snippets</h3>
-        <p>Tus notas, snippets y prompts por workspace, a mano en el escritorio y en el teléfono.</p>
+        <p>Tus notas, snippets y prompts por workspace, siempre a mano en el escritorio.</p>
       </article>
       <article class="card">
         <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="var(--event-violet)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
         <h3>Privado por diseño</h3>
-        <p>Todo cifrado de extremo a extremo. El teléfono nunca ve lo que decidís mantener oculto.</p>
+        <p>El puente con el companion es cifrado de extremo a extremo: el teléfono nunca verá lo que decidas mantener oculto.</p>
       </article>
     </div>
   </section>
@@ -278,7 +279,7 @@
   <section class="block wrap" id="download">
     <div class="head">
       <h2>Descargá Operia Term</h2>
-      <p>Versión <span id="verHead">0.2.0</span> · gratis · elegí tu plataforma.</p>
+      <p>Versión <span id="verHead">0.2.0</span> · gratis · elige tu plataforma.</p>
     </div>
     <div class="dl-grid">
       <div class="dl" data-os="mac">
@@ -345,7 +346,7 @@
     else if (/(Linux|X11)/i.test(ua) && !/Android/i.test(ua)) os = "linux";
     var names = { mac: "macOS", windows: "Windows", linux: "Linux" };
     var notes = {
-      mac: 'Detectamos <strong>macOS</strong>. ¿Mac Intel? Usá el segundo botón.',
+      mac: 'Detectamos <strong>macOS</strong>. ¿Mac Intel? Usa el segundo botón.',
       windows: 'Detectamos <strong>Windows</strong>. Instalador de 64-bit.',
       linux: 'Detectamos <strong>Linux</strong>. AppImage corre en cualquier distro.'
     };
