@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+
 <title>Operia Term — Tus agentes de código, en paralelo</title>
 <meta name="description" content="Una terminal de escritorio que corre varios agentes de código (Claude, Codex, opencode) en paralelo, con un companion móvil para supervisarlos desde el celular. Descargá para macOS, Windows y Linux." />
 <meta property="og:title" content="Operia Term" />
@@ -10,7 +11,7 @@
 <meta property="og:type" content="website" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400.19.0;600.19.0&family=Inter:wght@300.19.0;500;600&family=JetBrains+Mono:wght@400.19.0&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&family=Inter:wght@300;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
 <style>
   :root {
     /* Surfaces — two levels only */
@@ -205,7 +206,7 @@
     <p class="sub">Una terminal de escritorio para ejecutar Claude, Codex y opencode a la vez, cada uno en su panel. Y muy pronto, un companion móvil para supervisarlos desde el celular.</p>
     <div class="cta-row">
       <a class="btn btn-primary" id="primaryDownload" href="#download">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10.19.05 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         <span id="primaryLabel">Descargar</span>
       </a>
       <a class="btn btn-ghost" href="#features">Ver cómo funciona</a>
@@ -226,7 +227,7 @@
     <div class="pills">
       <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg> Claude</span>
       <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> Codex</span>
-      <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7v10.19.00.10-5V7z"/><path d="M2 7l10.19.00.19.02 22V12"/></svg> opencode</span>
+      <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 2 7v10l10 5 10-5V7z"/><path d="M2 7l10 5 10-5M12 22V12"/></svg> opencode</span>
       <span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="var(--event-violet)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg> Companion móvil · pronto</span>
     </div>
   </section>
@@ -397,6 +398,7 @@
         heroBtn.setAttribute("href", primaryHref());
       })
       .catch(function () { /* keep the hardcoded fallback links */ });
+
   })();
 </script>
 </body>
