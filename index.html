@@ -4,6 +4,24 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+<!-- Google Analytics 4.
+     GA_ID es el unico valor a cambiar si migramos de propiedad.
+     NOTA DE CUMPLIMIENTO: no hay Consent Mode v2 configurado. Para trafico de
+     la UE hace falta banner de consentimiento antes de que gtag envie nada. -->
+<script>
+  /* Un unico sitio donde vive el ID: el loader se construye a partir de el. */
+  window.GA_ID = "G-KMLBQYJKXR";
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+  gtag("js", new Date());
+  gtag("config", window.GA_ID);
+  (function () {
+    var s = document.createElement("script");
+    s.async = true;
+    s.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(window.GA_ID);
+    document.head.appendChild(s);
+  })();
+</script>
 <title>Operia Term — Tus agentes de código, en paralelo</title>
 <meta name="description" content="Una terminal de escritorio que corre varios agentes de código (Claude, Codex, opencode) en paralelo, con un companion móvil para supervisarlos desde el celular. Descargá para macOS, Windows y Linux." />
 <meta property="og:title" content="Operia Term" />
@@ -399,6 +417,41 @@
       })
       .catch(function () { /* keep the hardcoded fallback links */ });
 
+    /* ---- Analitica: un evento explicito por clic de descarga ----
+       El "file_download" automatico de GA4 (Enhanced Measurement) solo dispara
+       para una lista fija de extensiones que incluye .exe pero NO .dmg, .deb ni
+       .AppImage. Depender de el inflaria Windows y borraria mac y Linux, que es
+       justo el reparto que queremos medir. Este evento es la fuente de verdad. */
+    var PLATFORM = {
+      "mac-arm": "macos", "mac-intel": "macos",
+      "win": "windows",
+      "linux-appimage": "linux", "linux-deb": "linux"
+    };
+    document.addEventListener("click", function (ev) {
+      var el = ev.target;
+      if (!el || typeof el.closest !== "function") return;
+      var link = el.closest("[data-asset], #primaryDownload");
+      if (!link) return;
+
+      var asset = link.getAttribute("data-asset");
+      var placement = link.id === "primaryDownload" ? "hero" : "grid";
+      if (!asset) {
+        /* El boton del hero copia el href del enlace primario del SO detectado. */
+        var mirrored = document.querySelector('[data-primary="' + os + '"]');
+        asset = mirrored ? mirrored.getAttribute("data-asset") : "unknown";
+      }
+      var tag = document.getElementById("verTag");
+
+      if (typeof gtag !== "function") return;
+      gtag("event", "download", {
+        asset: asset,
+        platform: PLATFORM[asset] || "unknown",
+        /* Comparar con `platform` mide cuanto se equivoca la deteccion de SO. */
+        detected_os: os,
+        placement: placement,
+        app_version: tag ? (tag.textContent || "").replace(/^v/, "") : ""
+      });
+    });
   })();
 </script>
 </body>
